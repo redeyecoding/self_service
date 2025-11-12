@@ -4,6 +4,7 @@ from netmiko import ConnectHandler
 import os
 
 #TODO #Need to replace print statements with standard logging.
+#TODO need to fix README.md
 
 DEFAULT_USERNAME = os.environ["DEFAULT_USERNAME"]
 DEFAULT_PASSWORD = os.environ["DEFAULT_PASSWORD"]
