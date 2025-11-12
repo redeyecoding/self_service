@@ -3,6 +3,8 @@ import ping3
 from netmiko import ConnectHandler
 import os
 
+#TODO #Need to replace print statements with standard logging.
+
 DEFAULT_USERNAME = os.environ["DEFAULT_USERNAME"]
 DEFAULT_PASSWORD = os.environ["DEFAULT_PASSWORD"]
 DEVELOPER = os.environ["DEVELOPER"]
