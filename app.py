@@ -5,15 +5,15 @@ import os
 from loguru import logger
 import yaml
 
+current_directory = os.getcwd()
 
-CONFIG_FILE = "inventory.yaml" #FIXME Nee
+CONFIG_FILE = f"{current_directory}/inventory.yml" #FIXME Nee
 
 
 #TODO need to fix README.md
 
 # DEFAULT_USERNAME = os.environ["DEFAULT_USERNAME"]
 # DEFAULT_PASSWORD = os.environ["DEFAULT_PASSWORD"]
-DEVELOPER = os.environ["DEVELOPER"]
 
 
 # DEVICES = {
@@ -31,26 +31,27 @@ def load_inventory():
     """
     All this does is load non-secret data (devices and creds) from yaml file
     """
-
-    
     logger.info(f"Loading inventory from {CONFIG_FILE}...")
+
     try:
         with open(CONFIG_FILE, 'r') as yaml_contents: #FIXME Nee
             data = yaml.safe_load(yaml_contents)
             
         inventory = data.get('devices', {})
-
+        
         for device_name, device_data in inventory.items():
-            device_data['username'] = DEFAULT_USERNAME
-            device_data['password'] = DEFAULT_PASSWORD
+            print(f"{device_name}")
+            print(f"{device_data}")
+            USERNAME = device_data['username']
+            PASSWORD = device_data['password']
         
         logger.info(f"--- Successfully loaded {len(inventory)} devices ---")
         return inventory
 
     except Exception as yml_load_error:
         logger.error(f"FATAL: Could not load inventory: {yml_load_error}")
-        # In a real app, you might exit(1) here
-        return {} # Return an empty dict to prevent crash
+    
+        return {}
         
 
 DEVICES = load_inventory()
