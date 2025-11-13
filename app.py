@@ -27,7 +27,7 @@ DEVICES = {
 
 #Load inventory
 # def load_inventory():
-# pass
+# passd
 
 
 #LETS RUN A SINGLE COMMAND PLEASE :0)
