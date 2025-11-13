@@ -31,6 +31,8 @@ def load_inventory():
     """
     All this does is load non-secret data (devices and creds) from yaml file
     """
+
+    
     logger.info(f"Loading inventory from {CONFIG_FILE}...")
     try:
         with open(CONFIG_FILE, 'r') as yaml_contents: #FIXME Nee
