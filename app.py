@@ -3,6 +3,7 @@ import ping3
 from netmiko import ConnectHandler
 import os
 from loguru import logger
+import yaml
 
 
 
@@ -22,6 +23,12 @@ DEVICES = {
     }
 
 }
+
+
+#Load inventory
+# def load_inventory():
+# pass
+
 
 #LETS RUN A SINGLE COMMAND PLEASE :0)
 def run_ssh_command(device, command):
@@ -66,7 +73,7 @@ def confirm_running_api():
 @app.route("/api/ping/<ip_address>")
 def ping_ip(ip_address):
     '''
-        runs a standard ping test against the target ip address
+        runss a standard ping test against the target ip address
     '''
     logger.info(f"**---- Recived ping request for: {ip_address} ----**")
 
@@ -90,7 +97,7 @@ def run_ssh(device_name, command_str):
     if device_name not in DEVICES:
         return jsonify({"status": "error", "message": f"Sorry man...Device '{device_name}' not found."}), 404
     
-    #DO NOT MODIFY - this grabs a copy of the device info so we don't mess up the original
+    #- this grabs a copy of the device info so we don't mess up the original
     device_info = DEVICES[device_name].copy()
     device_info["device_name"] = device_name # primary use for the helper function.
 
