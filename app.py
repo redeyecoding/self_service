@@ -2,8 +2,10 @@ from flask import Flask, jsonify
 import ping3
 from netmiko import ConnectHandler
 import os
+from loguru import logger
 
-#TODO #Need to replace print statements with standard logging.
+
+
 #TODO need to fix README.md
 
 DEFAULT_USERNAME = os.environ["DEFAULT_USERNAME"]
@@ -66,7 +68,8 @@ def ping_ip(ip_address):
     '''
         runs a standard ping test against the target ip address
     '''
-    print(f" **---- Recived ping request for: {ip_address} ----** ")
+    logger.info(f"**---- Recived ping request for: {ip_address} ----**")
+
     redeye_rtt = ping3.ping(ip_address, timeout=1)
 
     if redeye_rtt is None:
@@ -80,7 +83,8 @@ def run_ssh(device_name, command_str):
     '''
         All this does is Connects to a pre-defined device and runs a show command.
     '''
-    print(f" --- Received SSH request for: {device_name} ---")
+
+    logger.info(f" --- Received SSH request for: {device_name} ---")
 
     #search for the device in 'DEVICESS' constant
     if device_name not in DEVICES:
