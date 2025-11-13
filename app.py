@@ -6,31 +6,55 @@ from loguru import logger
 import yaml
 
 
+CONFIG_FILE = "inventory.yaml" #FIXME Nee
+
 
 #TODO need to fix README.md
 
-DEFAULT_USERNAME = os.environ["DEFAULT_USERNAME"]
-DEFAULT_PASSWORD = os.environ["DEFAULT_PASSWORD"]
+# DEFAULT_USERNAME = os.environ["DEFAULT_USERNAME"]
+# DEFAULT_PASSWORD = os.environ["DEFAULT_PASSWORD"]
 DEVELOPER = os.environ["DEVELOPER"]
 
-# PUT THIS IN A DATABASE FILE FOR PRODUCTION NETWORKS
-DEVICES = {
-    "newyork_rtr_1": {
-        "host": "10.0.0.78",
-        "device_type": "cisco_ios",
-        "username": DEFAULT_USERNAME,
-        "password": DEFAULT_PASSWORD
-    }
 
-}
+# DEVICES = {
+#     "newyork_rtr_1": {
+#         "host": "10.0.0.78",
+#         "device_type": "cisco_ios",
+#         "username": DEFAULT_USERNAME,
+#         "password": DEFAULT_PASSWORD
+#     }
 
-
-#Load inventory
-# def load_inventory():
-# passd
+# }
 
 
-#LETS RUN A SINGLE COMMAND PLEASE :0)
+def load_inventory():
+    """
+    All this does is load non-secret data (devices and creds) from yaml file
+    """
+    logger.info(f"Loading inventory from {CONFIG_FILE}...")
+    try:
+        with open(CONFIG_FILE, 'r') as yaml_contents: #FIXME Nee
+            data = yaml.safe_load(yaml_contents)
+            
+        inventory = data.get('devices', {})
+
+        for device_name, device_data in inventory.items():
+            device_data['username'] = DEFAULT_USERNAME
+            device_data['password'] = DEFAULT_PASSWORD
+        
+        logger.info(f"--- Successfully loaded {len(inventory)} devices ---")
+        return inventory
+
+    except Exception as yml_load_error:
+        logger.error(f"FATAL: Could not load inventory: {yml_load_error}")
+        # In a real app, you might exit(1) here
+        return {} # Return an empty dict to prevent crash
+        
+
+DEVICES = load_inventory()
+
+
+#LETS RUN A SINGLE COMMAND 
 def run_ssh_command(device, command):
     '''
         My helper function to connect and run a single command to the CPE
@@ -68,7 +92,7 @@ def confirm_running_api():
     '''
         JUST TESTING TO MAKE SURE THE API IS RUNNING
     '''
-    return jsonify({"MESSAGE": f"{DEVELOPER}'s API is running!. "})
+    return jsonify({"MESSAGE": f"Nice, the API is running!. "})
 
 @app.route("/api/ping/<ip_address>")
 def ping_ip(ip_address):
@@ -97,11 +121,11 @@ def run_ssh(device_name, command_str):
     if device_name not in DEVICES:
         return jsonify({"status": "error", "message": f"Sorry man...Device '{device_name}' not found."}), 404
     
-    #- this grabs a copy of the device info so we don't mess up the original
+    #-  grabs a copy of the device info so we don't mess up the original
     device_info = DEVICES[device_name].copy()
     device_info["device_name"] = device_name # primary use for the helper function.
 
-    #get rid of the underScores
+
     command = command_str.replace("_", " ")
 
     result = run_ssh_command(device_info, command)
